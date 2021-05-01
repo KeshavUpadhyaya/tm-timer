@@ -1,5 +1,41 @@
+<p>Speech type</p>
+
+<input type="radio" name="speech" value="tableTopics" [(ngModel)]="speechType" [value]="speechTypeOptions[0]">
+<label for="tableTopics">Table Topics (1-2 min)</label>
+
+<input type="radio" name="speech" value="preparedSpeeches" [(ngModel)]="speechType" [value]="speechTypeOptions[1]">
+<label for="preparedSpeeches">Prepared Speech (5-7 min)</label>
+<p> Speech type : {{speechType}} </p>
+
+
+<label for="speaker">Speaker Name</label>
+<input type="text" [(ngModel)]="speakerName">
+
+
 <div class="timer">
-  <h4>Timer test</h4>
-  <span id="minutes"> {{ minutesToDDay }} </span> Min
-  <span id="seconds"> {{secondsToDDay}} </span> S
+  <button (click)="startTimer()">Start Timer</button>
+  <button (click)="pauseTimer()">Pause</button>
+
+  <p [ngClass]="{'green': time >= 10, 'yellow': time >= 20}">{{ display }} </p>
+
+  <button (click)="resetTimer()"> Reset </button>
+
+  <p> {{speakerName}} </p>
+
+  <button (click)="clearStorage()">Clear storage</button>
+
+  <table>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Speech Type</th>
+      <th scope="col">Speaker</th>
+      <th scope="col">Time</th>
+    </tr>
+    <tr *ngFor="let speaker of getSpeakers()">
+      <td> {{speaker.speechNo}} </td>
+      <td> {{speaker.type}} </td>
+      <td> {{speaker.name}} </td>
+      <td> {{speaker.time}} </td>
+    </tr>
+  </table>
 </div>

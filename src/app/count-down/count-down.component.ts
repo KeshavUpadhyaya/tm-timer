@@ -1,44 +1,86 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { interval, Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import Speaker from '../model/Speaker';
+import { SpeechType } from '../model/SpeechType';
 
 @Component({
   selector: 'app-count-down',
   templateUrl: './count-down.component.html',
   styleUrls: ['./count-down.component.scss']
 })
-export class CountDownComponent implements OnInit, OnDestroy {
+export class CountDownComponent implements OnInit {
 
-  private subscription!: Subscription;
+  time!: number;
+  display!: string;
+  interval!: any;
+  speakers: Speaker[] = [];
+  speakerName!: string;
+  speechNo = 1;
+  speechType!: string;
 
-  private dDay = new Date('Jan 01 2022 00:00:00');
-  private millisecondsInASecond = 1000;
-  private minutesInAnHour = 60;
-  private secondsInAMinute = 60;
-
-  private timeDiff!: number;
-  public secondsToDDay!: number;
-  public minutesToDDay!: number;
-
-  constructor() { }
+  speechTypeOptions = Object.values(SpeechType);
 
   ngOnInit(): void {
-    this.subscription = interval(1000)
-      .subscribe(x => this.getTimeDifference());
-  }
-
-  private getTimeDifference(): void {
-    this.timeDiff = this.dDay.getTime() - new Date().getTime();
-    this.allocateTimeUnits(this.timeDiff);
-  }
-
-  private allocateTimeUnits(timeDiff: number): void {
-    this.secondsToDDay = Math.floor((timeDiff) / (this.millisecondsInASecond) % this.secondsInAMinute);
-    this.minutesToDDay = Math.floor((timeDiff) / (this.millisecondsInASecond * this.minutesInAnHour) % this.secondsInAMinute);
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.time = 0;
+    this.display = '00:00';
+    this.speakerName = '';
+    console.log(this.speechTypeOptions);
   }
 
 
+  startTimer(): void {
+    console.log('=====>');
+    this.interval = setInterval(() => {
+      this.time++;
+      this.display = this.transform(this.time);
+    }, 1000);
+  }
+
+  transform(value: number): string {
+    let minutes: number | string = Math.floor(value / 60);
+    if (minutes < 10) {
+      minutes = `0${minutes}`;
+    }
+    let seconds: number | string = (value - +minutes * 60);
+    if (seconds < 10) {
+      seconds = `0${seconds}`;
+    }
+    return minutes + ':' + seconds;
+  }
+
+  pauseTimer(): void {
+    clearInterval(this.interval);
+  }
+
+  resetTimer(): void {
+    const speaker: Speaker = {
+      speechNo: this.speechNo,
+      type: this.speechType,
+      name: this.speakerName,
+      time: this.display
+    };
+
+    const toastmastersSpeakers = localStorage.getItem('toastmastersSpeakers');
+    if (toastmastersSpeakers) {
+      this.speakers = JSON.parse(toastmastersSpeakers);
+    }
+
+    this.speakers.push(speaker);
+    const speakersString = JSON.stringify(this.speakers);
+    localStorage.setItem('toastmastersSpeakers', speakersString);
+
+    this.ngOnInit();
+    this.speechNo++;
+
+  }
+
+  getSpeakers(): Speaker[] {
+    const toastmastersSpeakers = localStorage.getItem('toastmastersSpeakers');
+    return toastmastersSpeakers ? JSON.parse(toastmastersSpeakers) : [];
+  }
+
+  clearStorage(): void {
+    localStorage.removeItem('toastmastersSpeakers');
+    this.speakers = [];
+    this.ngOnInit();
+  }
 }
