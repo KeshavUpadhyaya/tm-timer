@@ -6,6 +6,8 @@ import Speech from '../model/Speech';
 import { SpeechType } from '../model/SpeechType';
 import TableTopics from '../model/TableTopics';
 
+const TOASTMASTERS_SPEAKERS = 'toastmastersSpeakers';
+
 @Component({
   selector: 'app-counter',
   templateUrl: './counter.component.html',
@@ -66,25 +68,25 @@ export class CounterComponent implements OnInit {
       time: this.display
     };
 
-    const toastmastersSpeakers = localStorage.getItem('toastmastersSpeakers');
+    const toastmastersSpeakers = localStorage.getItem(TOASTMASTERS_SPEAKERS);
     if (toastmastersSpeakers) {
       this.speakers = JSON.parse(toastmastersSpeakers);
     }
 
     this.speakers.push(speaker);
     const speakersString = JSON.stringify(this.speakers);
-    localStorage.setItem('toastmastersSpeakers', speakersString);
+    localStorage.setItem(TOASTMASTERS_SPEAKERS, speakersString);
 
     this.ngOnInit();
   }
 
   getSpeakers(): Speaker[] {
-    const toastmastersSpeakers = localStorage.getItem('toastmastersSpeakers');
+    const toastmastersSpeakers = localStorage.getItem(TOASTMASTERS_SPEAKERS);
     return toastmastersSpeakers ? JSON.parse(toastmastersSpeakers) : [];
   }
 
   clearStorage(): void {
-    localStorage.removeItem('toastmastersSpeakers');
+    localStorage.removeItem(TOASTMASTERS_SPEAKERS);
     this.speakers = [];
     this.ngOnInit();
   }
