@@ -1,4 +1,5 @@
 export enum SpeechType {
   TableTopics = 'Table Topics',
-  PreparedSpeech = 'Prepared Speech'
+  PreparedSpeech = 'Prepared Speech',
+  IceBreaker = 'Ice Breaker'
 }

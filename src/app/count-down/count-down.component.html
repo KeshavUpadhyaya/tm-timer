@@ -1,41 +1,56 @@
-<p>Speech type</p>
+<div class="container" [ngClass]="
+{
+  'default': !this.speech, 
+  'green': this.speech && this.time >= this.speech.greenTime && this.time < this.speech.yellowTime,
+  'yellow':this.speech &&  this.time >= this.speech.yellowTime && this.time < this.speech.redTime,
+  'red': this.speech && this.time >= this.speech.redTime
+}
+">
 
-<input type="radio" name="speech" value="tableTopics" [(ngModel)]="speechType" [value]="speechTypeOptions[0]">
-<label for="tableTopics">Table Topics (1-2 min)</label>
+  <p>Speech type</p>
 
-<input type="radio" name="speech" value="preparedSpeeches" [(ngModel)]="speechType" [value]="speechTypeOptions[1]">
-<label for="preparedSpeeches">Prepared Speech (5-7 min)</label>
-<p> Speech type : {{speechType}} </p>
+  <input type="radio" id="tableTopics" value="tableTopics" [(ngModel)]="speechType" [value]="speechTypeOptions[0]"
+    (ngModelChange)="onSpeechTypeChange()">
+  <label for="tableTopics">Table Topics (1-2 min)</label>
+
+  <input type="radio" id="preparedSpeeches" value="preparedSpeeches" [(ngModel)]="speechType"
+    [value]="speechTypeOptions[1]" (ngModelChange)="onSpeechTypeChange()">
+  <label for="preparedSpeeches">Prepared Speech (5-7 min)</label>
+
+  <input type="radio" id="iceBreaker" value="iceBreaker" [(ngModel)]="speechType" [value]="speechTypeOptions[2]"
+    (ngModelChange)="onSpeechTypeChange()">
+  <label for="iceBreaker">Ice Breaker (4-6 min)</label>
 
 
-<label for="speaker">Speaker Name</label>
-<input type="text" [(ngModel)]="speakerName">
+  <label for="speaker">Speaker Name</label>
+  <input type="text" [(ngModel)]="speakerName">
 
 
-<div class="timer">
-  <button (click)="startTimer()">Start Timer</button>
-  <button (click)="pauseTimer()">Pause</button>
+  <div class="timer">
+    <button [disabled]="!speakerName || !speechType" (click)="startTimer()">Start Timer</button>
+    <button (click)="pauseTimer()">Stop</button>
 
-  <p [ngClass]="{'green': time >= 10, 'yellow': time >= 20}">{{ display }} </p>
+    <p>{{ display }} </p>
 
-  <button (click)="resetTimer()"> Reset </button>
+    <button *ngIf="clockStopped" (click)="resetTimer()"> Reset </button>
 
-  <p> {{speakerName}} </p>
+    <p> {{speakerName}} </p>
 
-  <button (click)="clearStorage()">Clear storage</button>
+    <button (click)="clearStorage()">Clear storage</button>
 
-  <table>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Speech Type</th>
-      <th scope="col">Speaker</th>
-      <th scope="col">Time</th>
-    </tr>
-    <tr *ngFor="let speaker of getSpeakers()">
-      <td> {{speaker.speechNo}} </td>
-      <td> {{speaker.type}} </td>
-      <td> {{speaker.name}} </td>
-      <td> {{speaker.time}} </td>
-    </tr>
-  </table>
+    <table>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Speech Type</th>
+        <th scope="col">Speaker</th>
+        <th scope="col">Time</th>
+      </tr>
+      <tr *ngFor="let speaker of getSpeakers(); index as i">
+        <td> {{i+1}} </td>
+        <td> {{speaker.type}} </td>
+        <td> {{speaker.name}} </td>
+        <td> {{speaker.time}} </td>
+      </tr>
+    </table>
+  </div>
 </div>

@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import IceBreaker from '../model/IceBreaker';
+import PreparedSpeech from '../model/PreparedSpeech';
 import Speaker from '../model/Speaker';
+import Speech from '../model/Speech';
 import { SpeechType } from '../model/SpeechType';
+import TableTopics from '../model/TableTopics';
 
 @Component({
   selector: 'app-count-down',
@@ -14,21 +18,24 @@ export class CountDownComponent implements OnInit {
   interval!: any;
   speakers: Speaker[] = [];
   speakerName!: string;
-  speechNo = 1;
   speechType!: string;
-
+  clockStopped!: boolean;
+  speech!: Speech;
   speechTypeOptions = Object.values(SpeechType);
+
 
   ngOnInit(): void {
     this.time = 0;
     this.display = '00:00';
     this.speakerName = '';
-    console.log(this.speechTypeOptions);
+    this.clockStopped = true;
+    // console.log(this.speechTypeOptions);
   }
 
 
   startTimer(): void {
-    console.log('=====>');
+    // console.log('=====>');
+    this.clockStopped = false;
     this.interval = setInterval(() => {
       this.time++;
       this.display = this.transform(this.time);
@@ -48,12 +55,12 @@ export class CountDownComponent implements OnInit {
   }
 
   pauseTimer(): void {
+    this.clockStopped = true;
     clearInterval(this.interval);
   }
 
   resetTimer(): void {
     const speaker: Speaker = {
-      speechNo: this.speechNo,
       type: this.speechType,
       name: this.speakerName,
       time: this.display
@@ -69,8 +76,6 @@ export class CountDownComponent implements OnInit {
     localStorage.setItem('toastmastersSpeakers', speakersString);
 
     this.ngOnInit();
-    this.speechNo++;
-
   }
 
   getSpeakers(): Speaker[] {
@@ -82,5 +87,42 @@ export class CountDownComponent implements OnInit {
     localStorage.removeItem('toastmastersSpeakers');
     this.speakers = [];
     this.ngOnInit();
+  }
+
+  onSpeechTypeChange(): void {
+    console.log(this.speechType);
+    switch (this.speechType) {
+      case SpeechType.IceBreaker:
+        this.speech = new IceBreaker();
+        break;
+
+      case SpeechType.PreparedSpeech:
+        this.speech = new PreparedSpeech();
+        break;
+
+      case SpeechType.TableTopics:
+        this.speech = new TableTopics();
+        break;
+
+      default:
+        break;
+    }
+    console.log(this.speech);
+  }
+
+  getBackgroundColor(): string {
+
+    if (!this.speech) {
+      return '';
+    }
+
+    if (this.time >= this.speech.greenTime && this.time < this.speech.yellowTime) {
+      return 'green';
+    } else if (this.time >= this.speech.yellowTime && this.time < this.speech.redTime) {
+      return 'yellow';
+    } else if (this.time >= this.speech.redTime) {
+      return 'red';
+    }
+    return '';
   }
 }

@@ -1,3 +1,13 @@
+$red: rgb(229, 67, 85);
+$yellow: rgb(231, 205, 60);
+$green: rgb(63, 205, 60);
+
+.container {
+  border: 2px solid black;
+  padding: 20px;
+  margin: 0;
+}
+
 .timer {
   text-align: center;
   justify-content: center;
@@ -5,13 +15,17 @@
 }
 
 .red {
-  color: red;
+  background-color: $red;
 }
 
 .yellow {
-  color: yellow;
+  background-color: $yellow;
 }
 
 .green {
-  color: green;
+  background-color: $green;
+}
+
+.default {
+  background-color: white;
 }
