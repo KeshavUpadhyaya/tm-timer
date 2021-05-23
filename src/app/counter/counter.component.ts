@@ -7,11 +7,11 @@ import { SpeechType } from '../model/SpeechType';
 import TableTopics from '../model/TableTopics';
 
 @Component({
-  selector: 'app-count-down',
-  templateUrl: './count-down.component.html',
-  styleUrls: ['./count-down.component.scss']
+  selector: 'app-counter',
+  templateUrl: './counter.component.html',
+  styleUrls: ['./counter.component.scss']
 })
-export class CountDownComponent implements OnInit {
+export class CounterComponent implements OnInit {
 
   time!: number;
   display!: string;
